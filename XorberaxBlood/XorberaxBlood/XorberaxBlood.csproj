@@ -1,19 +1,29 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup Label="VSModTemplate Properties">
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>net461</TargetFramework>
+    <PreserveCompilationContext>false</PreserveCompilationContext>
     <IncludeSymbols>true</IncludeSymbols>
     <Configurations>Debug;Release;ReleaseAndZip</Configurations>
     <RootNamespace>XorberaxBlood</RootNamespace>
+    <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
   </PropertyGroup>
 
   <PropertyGroup Label="VSModTemplate Debug Properties" Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DebugType>full</DebugType>
     <DebugSymbols>true</DebugSymbols>
-    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)' == 'ReleaseAndZip' ">
+    <Optimize>true</Optimize>
   </PropertyGroup>
 
   <!-- Template default references: -->
   <ItemGroup Label="VSModTemplate References">
+    <Reference Include="0Harmony, Version=2.0.4.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>$(VINTAGE_STORY)/Lib/0Harmony.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="VintagestoryAPI">
       <HintPath>$(VINTAGE_STORY)/VintagestoryAPI.dll</HintPath>
       <Private>False</Private>
@@ -22,16 +32,10 @@
       <HintPath>$(VINTAGE_STORY)/Mods/VSEssentials.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Harmony">
-      <HintPath>D:\Games\Vintagestory/Lib/0Harmony.dll</HintPath>
-    </Reference>
   </ItemGroup>
 
   <!-- Template ReleaseAndZip: -->
-  <PropertyGroup Label="Template ReleaseAndZipProperties" Condition="$(Configuration) == 'ReleaseAndZip'">
-    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-  </PropertyGroup>
-  <Target Name="Package" AfterTargets="CleanTheOutput" Condition="'$(Configuration)' == 'ReleaseAndZip'">
+  <Target Name="Package" AfterTargets="Build" Condition="'$(Configuration)' == 'ReleaseAndZip'">
     <ItemGroup>
       <FilesToDeleteFromReleaseAndZip Include="$(TargetDir)/$(TargetName)*.zip" />
     </ItemGroup>
@@ -57,9 +61,5 @@
     <None Update="modinfo.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="ILRepack.Lib.Task" Version="0.1.9" />
-    <PackageReference Include="ILRepack.NETStandard" Version="2.0.22" />
   </ItemGroup>
 </Project>
