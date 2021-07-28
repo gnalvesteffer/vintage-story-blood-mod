@@ -1,0 +1,65 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup Label="VSModTemplate Properties">
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <IncludeSymbols>true</IncludeSymbols>
+    <Configurations>Debug;Release;ReleaseAndZip</Configurations>
+    <RootNamespace>XorberaxBlood</RootNamespace>
+  </PropertyGroup>
+
+  <PropertyGroup Label="VSModTemplate Debug Properties" Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+  </PropertyGroup>
+
+  <!-- Template default references: -->
+  <ItemGroup Label="VSModTemplate References">
+    <Reference Include="VintagestoryAPI">
+      <HintPath>$(VINTAGE_STORY)/VintagestoryAPI.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="VSEssentials">
+      <HintPath>$(VINTAGE_STORY)/Mods/VSEssentials.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Harmony">
+      <HintPath>D:\Games\Vintagestory/Lib/0Harmony.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <!-- Template ReleaseAndZip: -->
+  <PropertyGroup Label="Template ReleaseAndZipProperties" Condition="$(Configuration) == 'ReleaseAndZip'">
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+  </PropertyGroup>
+  <Target Name="Package" AfterTargets="CleanTheOutput" Condition="'$(Configuration)' == 'ReleaseAndZip'">
+    <ItemGroup>
+      <FilesToDeleteFromReleaseAndZip Include="$(TargetDir)/$(TargetName)*.zip" />
+    </ItemGroup>
+    <Delete Files="@(FilesToDeleteFromReleaseAndZip)" ContinueOnError="true" />
+    <ZipDirectory DestinationFile="$(TargetDir)\..\$(TargetName).zip" SourceDirectory="$(TargetDir)" Overwrite="true" />
+    <RemoveDir Directories="$(TargetDir)" />
+    <ReadLinesFromFile File="modinfo.json">
+      <Output TaskParameter="Lines" ItemName="FileContents" />
+    </ReadLinesFromFile>
+    <PropertyGroup>
+      <CorrectText>@(FileContents->'%(Identity)', '%0a%0d')</CorrectText>
+      <CorrectVersionNumber>$([System.Text.RegularExpressions.Regex]::Match($(CorrectText), `\d+\.\d+\.\d+`))</CorrectVersionNumber>
+    </PropertyGroup>
+    <Move SourceFiles="$(TargetDir)\..\$(TargetName).zip" DestinationFiles="$(TargetDir)$(TargetName)_v$(CorrectVersionNumber).zip" />
+    <Message Importance="high" Text="Created zip file at $(TargetDir)$(TargetName)_v$(CorrectVersionNumber).zip" />
+  </Target>
+
+  <!-- Template content: -->
+  <ItemGroup Label="VSModTemplate Content">
+    <Content Include="assets/**">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <None Update="modinfo.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="ILRepack.Lib.Task" Version="0.1.9" />
+    <PackageReference Include="ILRepack.NETStandard" Version="2.0.22" />
+  </ItemGroup>
+</Project>

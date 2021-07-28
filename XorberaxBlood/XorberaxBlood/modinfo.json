@@ -1,0 +1,11 @@
+{
+  "type": "code",
+  "modid": "xorberax-bloodmod",
+  "name": "Blood",
+  "author": "Xorberax",
+  "description": "Adds blood droplets when things takes damage.",
+  "version": "0.1.0",
+  "dependencies": {
+    "game": "1.15.2"
+  }
+}
