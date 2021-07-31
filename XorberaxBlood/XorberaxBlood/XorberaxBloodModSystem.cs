@@ -7,25 +7,17 @@ using Vintagestory.API.MathTools;
 using Vintagestory.API.Server;
 using Vintagestory.GameContent;
 using HarmonyLib;
+using Vintagestory.API.Common.Entities;
 
 namespace XorberaxBlood
 {
     [HarmonyPatch]
     public class XorberaxBloodModSystem : ModSystem
     {
-        private const float MinimumDamageToTriggerBlood = 2.0f;
-        public static readonly Random Random = new Random();
-        private static readonly HashSet<EntityBleedBehavior> EntityBleedBehaviors = new HashSet<EntityBleedBehavior>();
+        private static readonly Dictionary<Entity, EntityBleedBehavior> EntityBleedBehaviors = new Dictionary<Entity, EntityBleedBehavior>();
 
-        private static readonly HashSet<EnumDamageType> IgnoredDamageTypes = new HashSet<EnumDamageType>
-        {
-            EnumDamageType.Fire,
-            EnumDamageType.Frost,
-            EnumDamageType.Heal,
-            EnumDamageType.Hunger,
-            EnumDamageType.Poison,
-            EnumDamageType.Suffocation,
-        };
+        public static readonly Random Random = new Random();
+        public static ModConfig ModConfig { get; private set; }
 
         public override bool ShouldLoad(EnumAppSide appSide)
         {
@@ -38,18 +30,21 @@ namespace XorberaxBlood
 
         public override void StartClientSide(ICoreClientAPI api)
         {
+            ModConfig = new ModConfigLoader(api).LoadConfig();
             new Harmony("xorberax.blood").PatchAll();
-            api.Event.RegisterGameTickListener(OnGameTick, 1000 / 30);
+            api.Event.RegisterGameTickListener(OnGameTick, 1000 / ModConfig.TickRate);
         }
 
         private void OnGameTick(float deltaTime)
         {
             foreach (var entityBleedBehavior in EntityBleedBehaviors.ToList())
             {
-                entityBleedBehavior.Update(deltaTime);
-                if (entityBleedBehavior.ShouldRemoveBehavior)
+                var entity = entityBleedBehavior.Key;
+                var behavior = entityBleedBehavior.Value;
+                behavior.Update(deltaTime);
+                if (behavior.ShouldRemoveBehavior)
                 {
-                    EntityBleedBehaviors.Remove(entityBleedBehavior);
+                    EntityBleedBehaviors.Remove(entity);
                 }
             }
         }
@@ -62,19 +57,35 @@ namespace XorberaxBlood
             float damage
         )
         {
-            if (IgnoredDamageTypes.Contains(damageSource.Type) || damage < MinimumDamageToTriggerBlood)
+            if (
+                ModConfig.IgnoredDamageTypes.Contains(damageSource.Type) ||
+                damage < ModConfig.MinimumDamageRequiredToTriggerBlood
+            )
             {
                 return;
             }
 
             // Attach bleeding behavior to entity.
-            EntityBleedBehaviors.Add(new EntityBleedBehavior(__instance, 20));
+            if (EntityBleedBehaviors.ContainsKey(__instance.entity))
+            {
+                var entityBleedBehavior = EntityBleedBehaviors[__instance.entity];
+                entityBleedBehavior.ResetBleedDuration();
+            }
+            else
+            {
+                EntityBleedBehaviors.Add(__instance.entity, new EntityBleedBehavior(__instance, ModConfig.BleedDuration));
+            }
 
             // Make blood drop from damage.
             var particles = new SimpleParticleProperties(
-                5,
-                10,
-                ColorUtil.ColorFromRgba(30, 25, 122, 255),
+                ModConfig.MinimumBloodParticlesOnHit,
+                ModConfig.MaximumBloodParticlesOnHit,
+                ColorUtil.ColorFromRgba(
+                    ModConfig.BloodColorBlueAmount,
+                    ModConfig.BloodColorGreenAmount,
+                    ModConfig.BloodColorRedAmount,
+                    ModConfig.BloodColorAlphaAmount
+                ),
                 __instance.entity.Pos.XYZ.Add(__instance.entity.LocalEyePos).Sub(0.25, 0.25, 0.25),
                 __instance.entity.Pos.XYZ.Add(__instance.entity.LocalEyePos).Add(0.25, 0.25, 0.25),
                 new Vec3f(
@@ -86,10 +97,13 @@ namespace XorberaxBlood
                     (float)(Random.NextDouble() - Random.NextDouble()),
                     (float)(Random.NextDouble() - Random.NextDouble()),
                     (float)(Random.NextDouble() - Random.NextDouble())
-                ) * 2.0f
+                ) * 2.0f,
+                ModConfig.BloodDespawnDelay,
+                1.0f,
+                ModConfig.MinimumBloodSize,
+                ModConfig.MaximumBloodSize
             );
-            particles.AddVelocity = (new Vec3f(1, 1, 1) * (float)Random.NextDouble() * 2.0f) - (new Vec3f(1, 1, 1) * (float)Random.NextDouble() * 2.0f);
-            particles.LifeLength = 15.0f;
+            particles.AddVelocity = new Vec3f(1, 1, 1) * (float)Random.NextDouble() * 2.0f - new Vec3f(1, 1, 1) * (float)Random.NextDouble() * 2.0f;
             __instance.entity.World.SpawnParticles(particles);
         }
     }
