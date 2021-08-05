@@ -21,14 +21,10 @@ namespace XorberaxBlood
 
         public override bool ShouldLoad(EnumAppSide appSide)
         {
-            return appSide == EnumAppSide.Client;
+            return true;
         }
 
-        public override void StartServerSide(ICoreServerAPI api)
-        {
-        }
-
-        public override void StartClientSide(ICoreClientAPI api)
+        public override void Start(ICoreAPI api)
         {
             ModConfig = new ModConfigLoader(api).LoadConfig();
             new Harmony("xorberax.blood").PatchAll();
