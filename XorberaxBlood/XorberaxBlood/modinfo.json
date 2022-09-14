@@ -6,8 +6,8 @@
     "Xorberax"
   ],
   "description": "Adds blood droplets and bleeding when things takes damage (visual only).",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "dependencies": {
-    "game": "1.15.2"
+    "game": "1.17.3"
   }
 }

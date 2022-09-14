@@ -21,7 +21,7 @@ namespace XorberaxBlood
 
         public override bool ShouldLoad(EnumAppSide appSide)
         {
-            return true;
+            return appSide == EnumAppSide.Client;
         }
 
         public override void Start(ICoreAPI api)
@@ -50,7 +50,7 @@ namespace XorberaxBlood
         private static void OnEntityReceiveDamage(
             EntityBehaviorHealth __instance,
             DamageSource damageSource,
-            float damage
+            ref float damage
         )
         {
             if (
