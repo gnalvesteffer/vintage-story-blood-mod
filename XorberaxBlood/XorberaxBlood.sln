@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XorberaxBlood", "XorberaxBlood\XorberaxBlood.csproj", "{61D11E8B-2BF2-4F90-B5AD-7CD991629B39}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VintageStory.Xorberax.Blood", "VintageStory.Xorberax.Blood\VintageStory.Xorberax.Blood.csproj", "{B4E43F49-2F7C-4583-8037-89D4CED0641E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -9,11 +9,11 @@ Global
 		ReleaseAndZip|Any CPU = ReleaseAndZip|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{61D11E8B-2BF2-4F90-B5AD-7CD991629B39}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{61D11E8B-2BF2-4F90-B5AD-7CD991629B39}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{61D11E8B-2BF2-4F90-B5AD-7CD991629B39}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{61D11E8B-2BF2-4F90-B5AD-7CD991629B39}.Release|Any CPU.Build.0 = Release|Any CPU
-		{61D11E8B-2BF2-4F90-B5AD-7CD991629B39}.ReleaseAndZip|Any CPU.ActiveCfg = ReleaseAndZip|Any CPU
-		{61D11E8B-2BF2-4F90-B5AD-7CD991629B39}.ReleaseAndZip|Any CPU.Build.0 = ReleaseAndZip|Any CPU
+		{B4E43F49-2F7C-4583-8037-89D4CED0641E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B4E43F49-2F7C-4583-8037-89D4CED0641E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B4E43F49-2F7C-4583-8037-89D4CED0641E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B4E43F49-2F7C-4583-8037-89D4CED0641E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B4E43F49-2F7C-4583-8037-89D4CED0641E}.ReleaseAndZip|Any CPU.ActiveCfg = Debug|Any CPU
+		{B4E43F49-2F7C-4583-8037-89D4CED0641E}.ReleaseAndZip|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 EndGlobal
