@@ -1,2 +1,2 @@
-# Vintage Story Mods
-My mods for the game Vintage Story.
+# Vintage Story Blood Mod
+Adds a bleeding effect to mobs when hit.
