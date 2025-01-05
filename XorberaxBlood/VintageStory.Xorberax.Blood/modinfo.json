@@ -2,11 +2,12 @@
   "type": "code",
   "modid": "xorberax-bloodmod",
   "name": "Blood",
+  "side": "client",
   "authors": [
     "Xorberax"
   ],
   "description": "Adds blood droplets and bleeding when things takes damage (visual only).",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "dependencies": {
     "game": "1.20.0-rc.8"
   }
